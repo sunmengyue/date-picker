@@ -1,4 +1,3 @@
-import { v4 } from 'uuid';
 import {
   format,
   getUnixTime,
@@ -10,6 +9,7 @@ import {
   endOfWeek,
   endOfMonth,
   eachDayOfInterval,
+  isSameMonth,
 } from 'date-fns';
 
 const datePickerButton = document.querySelector('.date-picker-button');
@@ -20,7 +20,7 @@ const prevMonthButton = document.querySelector('.prev-month-button');
 const nextMonthButton = document.querySelector('.next-month-button');
 let currentDate = new Date();
 
-datePickerButton.addEventListener('click', (e) => {
+datePickerButton.addEventListener('click', () => {
   datePicker.classList.toggle('show');
   const selectedDate = fromUnixTime(datePickerButton.dataset.selectedDate);
   currentDate = selectedDate;
@@ -32,7 +32,7 @@ function setupDatePicker(selectedDate) {
   setupDates(selectedDate);
 }
 
-function setupDates(currentDate) {
+function setupDates(selectedDate) {
   const firstWeekStart = startOfWeek(startOfMonth(currentDate));
   const lastWeekEnd = endOfWeek(endOfMonth(currentDate));
 
@@ -42,8 +42,11 @@ function setupDates(currentDate) {
   dates.forEach((date) => {
     const dateElement = document.createElement('button');
     dateElement.classList.add('date');
-    dateGrid.appendChild(dateElement);
     dateElement.innerText = date.getDate();
+    if (!isSameMonth(date, currentDate)) {
+      dateElement.classList.add('date-picker-other-month-date');
+    }
+    dateGrid.appendChild(dateElement);
   });
 }
 
